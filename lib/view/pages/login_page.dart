@@ -1,0 +1,110 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:new_maya_exam/widget/common/common_app_bar.dart';
+import 'package:new_maya_exam/widget/common/common_button.dart';
+import 'package:new_maya_exam/widget/common/common_text_field.dart';
+import 'package:new_maya_exam/bloc/auth/auth_bloc.dart';
+import 'package:new_maya_exam/bloc/auth/auth_event.dart';
+import 'package:new_maya_exam/bloc/auth/auth_state.dart';
+import 'package:new_maya_exam/services/service_locator.dart';
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  late AuthBloc _authBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _authBloc = getIt<AuthBloc>();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    // Don't close the AuthBloc here as it's managed by GetIt and shared across the app
+    super.dispose();
+  }
+
+  void _login() {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      _authBloc.add(AuthSignInRequested(
+        email: email,
+        password: password,
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter both email and password'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: _authBloc,
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state.status == AuthStatus.error) {
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage ?? 'Login failed'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+          // Remove manual navigation - let the router handle redirection automatically
+        },
+        child: Scaffold(
+          appBar: CommonAppBar(context: context, title: 'Login'),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CommonTextField(
+                  controller: _emailController,
+                  label: 'Email',
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 16),
+                CommonTextField(
+                  controller: _passwordController,
+                  label: 'Password',
+                  obscureText: true,
+                ),
+                const SizedBox(height: 32),
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    if (state.status == AuthStatus.loading) {
+                      return const CircularProgressIndicator();
+                    }
+                    return CommonButton(
+                      text: 'Login',
+                      onPressed: _login,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
