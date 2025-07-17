@@ -26,8 +26,7 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
       if (balance != null) {
         emit(BalanceLoaded(balance));
       } else {
-        // Create initial balance if it doesn't exist by calling GetCurrentBalance event
-        add(GetCurrentBalance(event.uid));
+        print('No balance found for user: ${event.uid}');
       }
     } catch (e) {
       emit(BalanceError(e.toString()));
