@@ -9,7 +9,6 @@ import 'package:new_maya_exam/repository/auth_repository.dart';
 import 'package:new_maya_exam/models/user_model.dart';
 import 'dart:async';
 
-// Mock classes
 class MockAuthRepository extends Mock implements AuthRepositoryInterface {}
 
 class MockUser extends Mock implements User {}

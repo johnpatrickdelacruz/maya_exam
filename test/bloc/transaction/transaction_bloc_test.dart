@@ -10,7 +10,6 @@ import 'package:new_maya_exam/models/balance_model.dart';
 import 'package:new_maya_exam/models/transaction_model.dart';
 import 'package:new_maya_exam/models/user_model.dart';
 
-// Mock classes
 class MockAuthRepository extends Mock implements AuthRepositoryInterface {}
 
 class MockBalanceRepository extends Mock
@@ -22,7 +21,6 @@ class MockUserModel extends Mock implements UserModel {}
 
 class MockTransactionModel extends Mock implements TransactionModel {}
 
-// Fake classes for fallback values
 class FakeTransactionModel extends Fake implements TransactionModel {}
 
 void main() {

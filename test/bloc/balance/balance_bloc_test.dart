@@ -9,7 +9,6 @@ import 'package:new_maya_exam/models/balance_model.dart';
 import 'package:new_maya_exam/models/transaction_model.dart';
 import 'dart:async';
 
-// Mock classes
 class MockBalanceRepository extends Mock
     implements BalanceRepositoryInterface {}
 
@@ -17,7 +16,6 @@ class MockBalanceModel extends Mock implements BalanceModel {}
 
 class MockTransactionModel extends Mock implements TransactionModel {}
 
-// Fake classes for fallback values
 class FakeTransactionModel extends Fake implements TransactionModel {}
 
 void main() {
