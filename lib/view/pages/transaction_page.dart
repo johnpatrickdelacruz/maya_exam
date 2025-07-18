@@ -39,6 +39,10 @@ class _TransactionPageState extends State<TransactionPage> {
     super.dispose();
   }
 
+  bool _isValidEmail(String email) {
+    return RegExp(AppStrings.regexEmailPattern).hasMatch(email);
+  }
+
   void _submit() {
     final amountText = _amountController.text.trim();
     final email = _emailController.text.trim();
@@ -50,6 +54,16 @@ class _TransactionPageState extends State<TransactionPage> {
         icon: Icons.error,
         iconColor: Colors.red,
         message: AppStrings.errorEnterRecipientEmail,
+      );
+      return;
+    }
+
+    if (!_isValidEmail(email)) {
+      showCommonBottomSheet(
+        context: context,
+        icon: Icons.error,
+        iconColor: Colors.red,
+        message: AppStrings.errorInvalidEmailFormat,
       );
       return;
     }

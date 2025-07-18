@@ -44,6 +44,8 @@ class AppStrings {
       'Please enter both email and password';
   static const String errorEnterRecipientEmail =
       'Please enter recipient email address.';
+  static const String errorInvalidEmailFormat =
+      'Please enter a valid email address.';
   static const String errorEnterValidAmount = 'Please enter a valid amount.';
   static const String errorUserNotAuthenticated = 'User not authenticated.';
   static const String errorLoadingTransactions = 'Error loading transactions';
@@ -100,6 +102,8 @@ class AppStrings {
 
   // Regex Patterns
   static const String regexAmountPattern = r'^\d*\.?\d{0,2}';
+  static const String regexEmailPattern =
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
 
   // Debug/Log Tags
   static const String tagAppRouter = 'AppRouter';
