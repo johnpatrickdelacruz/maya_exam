@@ -4,6 +4,7 @@ import 'package:new_maya_exam/bloc/auth/auth_bloc.dart';
 import 'package:new_maya_exam/bloc/auth/auth_event.dart';
 import 'package:new_maya_exam/services/service_locator.dart';
 import 'package:new_maya_exam/utils/app_strings.dart';
+import 'package:new_maya_exam/widget/common/common_app_text.dart';
 
 class CommonAppBar extends AppBar {
   CommonAppBar({
@@ -12,7 +13,12 @@ class CommonAppBar extends AppBar {
     required String title,
     bool showLogout = false,
   }) : super(
-          title: Text(title),
+          title: AppText(
+            title,
+            style: AppTextStyle.titleLarge,
+            fontWeight: FontWeight.bold,
+          ),
+          centerTitle: true,
           actions: showLogout
               ? [
                   IconButton(
