@@ -1,0 +1,322 @@
+{
+	"info": {
+		"_postman_id": "b81c38e4-56df-420c-bfac-3de11dea9c36",
+		"name": "Maya Exam Firebase",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login test123@gmail.com",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('idToken', response.idToken);",
+									"    pm.environment.set('refreshToken', response.refreshToken);",
+									"    pm.environment.set('localId', response.localId);",
+									"    pm.test('Authentication successful', () => {",
+									"        pm.expect(response.idToken).to.exist;",
+									"    });",
+									"    console.log('User ID:', response.localId);",
+									"} else {",
+									"    pm.test('Authentication failed', () => {",
+									"        pm.expect(pm.response.code).to.not.equal(200);",
+									"    });",
+									"    console.log('Error:', pm.response.json());",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test123@gmail.com\",\n  \"password\": \"1qw21qw2\",\n  \"returnSecureToken\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={{FIREBASE_API_KEY}}",
+							"protocol": "https",
+							"host": [
+								"identitytoolkit",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"v1",
+								"accounts:signInWithPassword"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{FIREBASE_API_KEY}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login jp123@gmail.com",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('idToken', response.idToken);",
+									"    pm.environment.set('refreshToken', response.refreshToken);",
+									"    pm.environment.set('localId', response.localId);",
+									"    pm.test('Authentication successful', () => {",
+									"        pm.expect(response.idToken).to.exist;",
+									"    });",
+									"    console.log('User ID:', response.localId);",
+									"} else {",
+									"    pm.test('Authentication failed', () => {",
+									"        pm.expect(pm.response.code).to.not.equal(200);",
+									"    });",
+									"    console.log('Error:', pm.response.json());",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"jp123@gmail.com\",\n  \"password\": \"1qw21qw2\",\n  \"returnSecureToken\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={{FIREBASE_API_KEY}}",
+							"protocol": "https",
+							"host": [
+								"identitytoolkit",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"v1",
+								"accounts:signInWithPassword"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{FIREBASE_API_KEY}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Info",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idToken\": \"{{idToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key={{FIREBASE_API_KEY}}",
+							"protocol": "https",
+							"host": [
+								"identitytoolkit",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"v1",
+								"accounts:lookup"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{FIREBASE_API_KEY}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Firestore",
+			"item": [
+				{
+					"name": "Get User Balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{idToken}}"
+							}
+						],
+						"url": {
+							"raw": "https://firestore.googleapis.com/v1/projects/{{FIREBASE_PROJECT_ID}}/databases/(default)/documents/user_balances/{{localId}}",
+							"protocol": "https",
+							"host": [
+								"firestore",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"v1",
+								"projects",
+								"{{FIREBASE_PROJECT_ID}}",
+								"databases",
+								"(default)",
+								"documents",
+								"user_balances",
+								"{{localId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Transactions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.test('Transactions retrieved successfully', () => {",
+									"        pm.expect(response).to.exist;",
+									"    });",
+									"    ",
+									"    // Filter out empty results and get actual documents",
+									"    const documents = response.filter(item => item.document).map(item => item.document);",
+									"    ",
+									"    if (documents && documents.length > 0) {",
+									"        console.log('Found', documents.length, 'transactions');",
+									"        documents.forEach((doc, index) => {",
+									"            const fields = doc.fields;",
+									"            console.log(`Transaction ${index + 1}:`);",
+									"            console.log('  Amount:', fields.amount?.doubleValue || 'N/A');",
+									"            console.log('  Type:', fields.type?.stringValue || 'N/A');",
+									"            console.log('  Description:', fields.description?.stringValue || 'N/A');",
+									"            console.log('  Timestamp:', fields.timestamp?.timestampValue || 'N/A');",
+									"            if (fields.recipientUid?.stringValue) {",
+									"                console.log('  Recipient UID:', fields.recipientUid.stringValue);",
+									"            }",
+									"            if (fields.senderUid?.stringValue) {",
+									"                console.log('  Sender UID:', fields.senderUid.stringValue);",
+									"            }",
+									"            console.log('---');",
+									"        });",
+									"    } else {",
+									"        console.log('No transactions found for this user');",
+									"    }",
+									"} else {",
+									"    pm.test('Failed to get transactions', () => {",
+									"        pm.expect(pm.response.code).to.not.equal(200);",
+									"    });",
+									"    console.log('Error:', pm.response.json());",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{idToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"structuredQuery\": {\n    \"from\": [\n      {\n        \"collectionId\": \"transactions\"\n      }\n    ],\n    \"where\": {\n      \"fieldFilter\": {\n        \"field\": {\n          \"fieldPath\": \"uid\"\n        },\n        \"op\": \"EQUAL\",\n        \"value\": {\n          \"stringValue\": \"{{localId}}\"\n        }\n      }\n    },\n    \"orderBy\": [\n      {\n        \"field\": {\n          \"fieldPath\": \"timestamp\"\n        },\n        \"direction\": \"DESCENDING\"\n      }\n    ],\n    \"limit\": 20\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://firestore.googleapis.com/v1/projects/{{FIREBASE_PROJECT_ID}}/databases/(default)/documents:runQuery",
+							"protocol": "https",
+							"host": [
+								"firestore",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"v1",
+								"projects",
+								"{{FIREBASE_PROJECT_ID}}",
+								"databases",
+								"(default)",
+								"documents:runQuery"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "FIREBASE_API_KEY",
+			"value": "AIzaSyA1_T27ttyhCwYXkx0wt-06oUJjvEnm_7U"
+		},
+		{
+			"key": "FIREBASE_PROJECT_ID",
+			"value": "new-maya-exam"
+		}
+	]
+}
