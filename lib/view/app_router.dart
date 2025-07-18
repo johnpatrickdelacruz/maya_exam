@@ -8,6 +8,7 @@ import 'package:new_maya_exam/view/pages/wallet_page.dart';
 import 'package:new_maya_exam/bloc/auth/auth_bloc.dart';
 import 'package:new_maya_exam/bloc/auth/auth_state.dart';
 import 'package:new_maya_exam/services/service_locator.dart';
+import 'package:new_maya_exam/utils/debug_utils.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -20,23 +21,24 @@ class AppRouter {
       final isGoingToLogin = state.matchedLocation == '/';
       final isAuthenticated = authState.status == AuthStatus.authenticated;
 
-      print(
-          'Router redirect - Location: ${state.matchedLocation}, Auth Status: ${authState.status}');
+      DebugUtils.debugPrint(
+          'Router redirect - Location: ${state.matchedLocation}, Auth Status: ${authState.status}',
+          tag: 'AppRouter');
 
       // If not authenticated and not going to login, redirect to login
       if (!isAuthenticated && !isGoingToLogin) {
-        print('Redirecting to login');
+        DebugUtils.debugPrint('Redirecting to login', tag: 'AppRouter');
         return '/';
       }
 
       // If authenticated and going to login, redirect to wallet
       if (isAuthenticated && isGoingToLogin) {
-        print('Redirecting to wallet');
+        DebugUtils.debugPrint('Redirecting to wallet', tag: 'AppRouter');
         return '/wallet';
       }
 
       // No redirect needed
-      print('No redirect needed');
+      DebugUtils.debugPrint('No redirect needed', tag: 'AppRouter');
       return null;
     },
     routes: [
@@ -66,7 +68,8 @@ class _AuthChangeNotifier extends ChangeNotifier {
   _AuthChangeNotifier() {
     final authBloc = getIt<AuthBloc>();
     _subscription = authBloc.stream.listen((state) {
-      print('Auth state changed: ${state.status}');
+      DebugUtils.debugPrint('Auth state changed: ${state.status}',
+          tag: 'AppRouter');
       // Notify listeners when auth state changes
       notifyListeners();
     });

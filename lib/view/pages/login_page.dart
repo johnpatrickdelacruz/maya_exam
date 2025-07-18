@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_maya_exam/widget/common/common_app_bar.dart';
 import 'package:new_maya_exam/widget/common/common_button.dart';
 import 'package:new_maya_exam/widget/common/common_text_field.dart';
+import 'package:new_maya_exam/widget/common/common_app_text.dart';
 import 'package:new_maya_exam/bloc/auth/auth_bloc.dart';
 import 'package:new_maya_exam/bloc/auth/auth_event.dart';
 import 'package:new_maya_exam/bloc/auth/auth_state.dart';
 import 'package:new_maya_exam/services/service_locator.dart';
+import 'package:new_maya_exam/utils/app_strings.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    // Don't close the AuthBloc here as it's managed by GetIt and shared across the app
+    _authBloc.close();
     super.dispose();
   }
 
@@ -46,7 +48,10 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please enter both email and password'),
+          content: AppText.bodyMedium(
+            AppStrings.errorEnterEmailPassword,
+            color: Colors.white,
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -60,18 +65,19 @@ class _LoginPageState extends State<LoginPage> {
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state.status == AuthStatus.error) {
-            // Show error message
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage ?? 'Login failed'),
+                content: AppText.bodyMedium(
+                  state.errorMessage ?? AppStrings.errorLoginFailed,
+                  color: Colors.white,
+                ),
                 backgroundColor: Colors.red,
               ),
             );
           }
-          // Remove manual navigation - let the router handle redirection automatically
         },
         child: Scaffold(
-          appBar: CommonAppBar(context: context, title: 'Login'),
+          appBar: CommonAppBar(context: context, title: AppStrings.titleLogin),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -79,13 +85,13 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 CommonTextField(
                   controller: _emailController,
-                  label: 'Email',
+                  label: AppStrings.labelEmail,
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16),
                 CommonTextField(
                   controller: _passwordController,
-                  label: 'Password',
+                  label: AppStrings.labelPassword,
                   obscureText: true,
                 ),
                 const SizedBox(height: 32),
@@ -95,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                       return const CircularProgressIndicator();
                     }
                     return CommonButton(
-                      text: 'Login',
+                      text: AppStrings.buttonLogin,
                       onPressed: _login,
                     );
                   },

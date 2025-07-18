@@ -7,6 +7,7 @@ import 'package:new_maya_exam/bloc/auth/auth_bloc.dart';
 import 'package:new_maya_exam/bloc/auth/auth_event.dart';
 import 'package:new_maya_exam/bloc/balance/balance_bloc.dart';
 import 'package:new_maya_exam/bloc/transaction/transaction_bloc.dart';
+import 'package:new_maya_exam/utils/app_strings.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
-          create: (context) => getIt<AuthBloc>()..add(AuthStarted()),
+          create: (context) => getIt<AuthBloc>()..add(const AuthStarted()),
         ),
         BlocProvider<BalanceBloc>(
           create: (context) => getIt<BalanceBloc>(),
@@ -35,9 +36,9 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         routerConfig: AppRouter.router,
-        title: 'Flutter Demo',
+        title: AppStrings.appTitle,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
           useMaterial3: true,
         ),
       ),

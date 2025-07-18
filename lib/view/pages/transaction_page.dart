@@ -11,6 +11,7 @@ import 'package:new_maya_exam/bloc/transaction/transaction_bloc.dart';
 import 'package:new_maya_exam/bloc/transaction/transaction_event.dart';
 import 'package:new_maya_exam/bloc/transaction/transaction_state.dart';
 import 'package:new_maya_exam/services/service_locator.dart';
+import 'package:new_maya_exam/utils/app_strings.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -43,13 +44,12 @@ class _TransactionPageState extends State<TransactionPage> {
     final email = _emailController.text.trim();
     final amount = double.tryParse(amountText);
 
-    // Validation
     if (email.isEmpty) {
       showCommonBottomSheet(
         context: context,
         icon: Icons.error,
         iconColor: Colors.red,
-        message: 'Please enter recipient email address.',
+        message: AppStrings.errorEnterRecipientEmail,
       );
       return;
     }
@@ -59,29 +59,27 @@ class _TransactionPageState extends State<TransactionPage> {
         context: context,
         icon: Icons.error,
         iconColor: Colors.red,
-        message: 'Please enter a valid amount.',
+        message: AppStrings.errorEnterValidAmount,
       );
       return;
     }
 
-    // Get current user
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
       showCommonBottomSheet(
         context: context,
         icon: Icons.error,
         iconColor: Colors.red,
-        message: 'User not authenticated.',
+        message: AppStrings.errorUserNotAuthenticated,
       );
       return;
     }
 
-    // Send money
     _transactionBloc.add(SendMoneyToUser(
       senderUid: currentUser.uid,
       recipientEmail: email,
       amount: amount,
-      description: 'Money transfer',
+      description: AppStrings.transactionDescriptionDefault,
     ));
   }
 
@@ -119,7 +117,9 @@ class _TransactionPageState extends State<TransactionPage> {
           },
           child: Scaffold(
             appBar: CommonAppBar(
-                context: context, title: 'Send Money', showLogout: true),
+                context: context,
+                title: AppStrings.titleSendMoney,
+                showLogout: true),
             body: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(
@@ -127,18 +127,18 @@ class _TransactionPageState extends State<TransactionPage> {
                 children: [
                   CommonTextField(
                     controller: _emailController,
-                    label: 'Recipient Email',
+                    label: AppStrings.labelRecipientEmail,
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 16),
                   CommonTextField(
                     controller: _amountController,
-                    label: 'Enter Amount',
+                    label: AppStrings.labelEnterAmount,
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(
-                          RegExp(r'^\d*\.?\d{0,2}')),
+                          RegExp(AppStrings.regexAmountPattern)),
                     ],
                   ),
                   const SizedBox(height: 32),
@@ -148,7 +148,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         return const CircularProgressIndicator();
                       }
                       return CommonButton(
-                        text: 'Send Money',
+                        text: AppStrings.buttonSendMoney,
                         onPressed: _submit,
                       );
                     },

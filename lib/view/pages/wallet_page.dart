@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:new_maya_exam/widget/common/common_app_bar.dart';
 import 'package:new_maya_exam/widget/common/common_button.dart';
+import 'package:new_maya_exam/widget/common/common_app_text.dart';
 import 'package:new_maya_exam/bloc/balance/balance_bloc.dart';
 import 'package:new_maya_exam/bloc/balance/balance_event.dart';
 import 'package:new_maya_exam/bloc/balance/balance_state.dart';
+import 'package:new_maya_exam/utils/app_strings.dart';
 
 class WalletPage extends StatefulWidget {
   const WalletPage({super.key});
@@ -34,7 +36,6 @@ class _WalletPageState extends State<WalletPage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    // Refresh balance when app comes back to foreground
     if (state == AppLifecycleState.resumed) {
       _loadBalance();
     }
@@ -51,25 +52,26 @@ class _WalletPageState extends State<WalletPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(context: context, title: 'Wallet', showLogout: true),
+      appBar: CommonAppBar(
+          context: context, title: AppStrings.titleWallet, showLogout: true),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.deepPurple),
-              child: Text('Menu',
-                  style: TextStyle(color: Colors.white, fontSize: 24)),
-            ),
-            ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text('Transaction History'),
-              onTap: () async {
-                Navigator.pop(context);
-                await context.push('/history');
-                // Refresh balance after returning from history
-                _loadBalance();
-              },
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Colors.green),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const SizedBox(height: 8),
+                  AppText.labelLarge(
+                    FirebaseAuth.instance.currentUser?.email ??
+                        AppStrings.noEmailAvailable,
+                    color: Colors.white70,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -88,12 +90,10 @@ class _WalletPageState extends State<WalletPage> with WidgetsBindingObserver {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      AppText.currency(
                         _showBalance
-                            ? '₱${balance.toStringAsFixed(2)}'
-                            : '••••••',
-                        style: const TextStyle(
-                            fontSize: 32, fontWeight: FontWeight.bold),
+                            ? AppStrings.formatCurrency(balance)
+                            : AppStrings.balanceHidden,
                       ),
                       IconButton(
                         icon: Icon(_showBalance
@@ -110,9 +110,8 @@ class _WalletPageState extends State<WalletPage> with WidgetsBindingObserver {
                 } else if (state is BalanceError) {
                   return Column(
                     children: [
-                      Text(
-                        'Error: ${state.message}',
-                        style: const TextStyle(color: Colors.red),
+                      AppText.error(
+                        AppStrings.formatError(state.message),
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
@@ -124,35 +123,30 @@ class _WalletPageState extends State<WalletPage> with WidgetsBindingObserver {
                                 .add(GetCurrentBalance(user.uid));
                           }
                         },
-                        child: const Text('Retry'),
+                        child: const AppText.labelLarge(AppStrings.buttonRetry),
                       ),
                     ],
                   );
                 } else {
-                  return const Text(
-                    'No balance data',
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                  return const AppText.headlineLarge(
+                    AppStrings.noBalanceData,
                   );
                 }
               },
             ),
             const SizedBox(height: 40),
             CommonButton(
-              text: 'Send Money',
+              text: AppStrings.buttonSendMoney,
               onPressed: () async {
-                // Navigate to transaction page and refresh balance when returning
-                await context.push('/transaction');
-                // Refresh balance after returning from transaction
+                await context.push(AppStrings.routeTransaction);
                 _loadBalance();
               },
             ),
             const SizedBox(height: 16),
             CommonButton(
-              text: 'View Transactions',
+              text: AppStrings.buttonViewTransactions,
               onPressed: () async {
-                // Navigate to history page and refresh balance when returning
-                await context.push('/history');
-                // Refresh balance after returning from history
+                await context.push(AppStrings.routeHistory);
                 _loadBalance();
               },
             ),

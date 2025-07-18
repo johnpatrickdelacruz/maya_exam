@@ -6,6 +6,7 @@ import 'package:new_maya_exam/bloc/transaction/transaction_state.dart';
 import 'package:new_maya_exam/repository/auth_repository.dart';
 import 'package:new_maya_exam/repository/balance_repository.dart';
 import 'package:new_maya_exam/models/transaction_model.dart';
+import 'package:new_maya_exam/utils/debug_utils.dart';
 // import 'package:new_maya_exam/utils/connectivity_service.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
@@ -58,16 +59,20 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       }
 
       // Find recipient by email
-      print('Looking for recipient with email: ${event.recipientEmail}');
+      DebugUtils.debugPrint(
+          'Looking for recipient with email: ${event.recipientEmail}',
+          tag: 'TransactionBloc');
       final recipient =
           await _authRepository.findUserByEmail(event.recipientEmail);
       if (recipient == null) {
-        print('Recipient not found in database');
+        DebugUtils.debugPrint('Recipient not found in database',
+            tag: 'TransactionBloc');
         emit(TransactionError(
             'Recipient with email "${event.recipientEmail}" not found.'));
         return;
       }
-      print('Found recipient: ${recipient.uid}');
+      DebugUtils.debugPrint('Found recipient: ${recipient.uid}',
+          tag: 'TransactionBloc');
 
       // Prevent sending money to yourself
       if (event.senderUid == recipient.uid) {

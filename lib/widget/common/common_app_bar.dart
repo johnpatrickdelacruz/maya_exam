@@ -3,15 +3,15 @@ import 'package:new_maya_exam/utils/utils.dart';
 import 'package:new_maya_exam/bloc/auth/auth_bloc.dart';
 import 'package:new_maya_exam/bloc/auth/auth_event.dart';
 import 'package:new_maya_exam/services/service_locator.dart';
+import 'package:new_maya_exam/utils/app_strings.dart';
 
 class CommonAppBar extends AppBar {
   CommonAppBar({
-    Key? key,
+    super.key,
     required BuildContext context,
     required String title,
     bool showLogout = false,
   }) : super(
-          key: key,
           title: Text(title),
           actions: showLogout
               ? [
@@ -20,16 +20,16 @@ class CommonAppBar extends AppBar {
                     onPressed: () {
                       Utils.showCommonDialog(
                         context: context,
-                        title: 'Logout',
-                        content: 'Are you sure you want to logout?',
-                        cancelText: 'Cancel',
-                        okText: 'Logout',
+                        title: AppStrings.dialogLogoutTitle,
+                        content: AppStrings.dialogLogoutContent,
+                        cancelText: AppStrings.buttonCancel,
+                        okText: AppStrings.buttonLogout,
                         onCancel: () => Navigator.pop(context),
                         onOk: () {
                           Navigator.pop(context);
                           // Use AuthBloc to properly sign out
                           final authBloc = getIt<AuthBloc>();
-                          authBloc.add(AuthSignOutRequested());
+                          authBloc.add(const AuthSignOutRequested());
                         },
                       );
                     },

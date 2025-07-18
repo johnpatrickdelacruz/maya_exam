@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_maya_exam/widget/common/common_app_text.dart';
 
 class CommonBottomSheet extends StatelessWidget {
   final IconData icon;
@@ -14,8 +15,12 @@ class CommonBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: double.infinity,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       child: Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -23,10 +28,10 @@ class CommonBottomSheet extends StatelessWidget {
           children: [
             Icon(icon, color: iconColor, size: 48),
             const SizedBox(height: 16),
-            Text(
+            AppText.bodyLarge(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ],
         ),

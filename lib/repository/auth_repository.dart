@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
+import '../utils/debug_utils.dart';
 
 abstract class AuthRepositoryInterface {
   Stream<User?> get authStateChanges;
@@ -64,7 +65,8 @@ class AuthRepository implements AuthRepositoryInterface {
   Future<UserModel?> findUserByEmail(String email) async {
     try {
       final normalizedEmail = email.toLowerCase().trim();
-      print('Searching for user with email: $normalizedEmail');
+      DebugUtils.debugPrint('Searching for user with email: $normalizedEmail',
+          tag: 'AuthRepository');
       // Query Firestore to find user by email
       final querySnapshot = await _firestore
           .collection('users')
@@ -72,12 +74,14 @@ class AuthRepository implements AuthRepositoryInterface {
           .limit(1)
           .get();
 
-      print('Query returned ${querySnapshot.docs.length} documents');
+      DebugUtils.debugPrint(
+          'Query returned ${querySnapshot.docs.length} documents',
+          tag: 'AuthRepository');
 
       if (querySnapshot.docs.isNotEmpty) {
         final doc = querySnapshot.docs.first;
         final data = doc.data();
-        print('Found user data: $data');
+        DebugUtils.debugPrint('Found user data: $data', tag: 'AuthRepository');
         return UserModel(
           uid: doc.id,
           email: data['email'] ?? '',
@@ -85,10 +89,12 @@ class AuthRepository implements AuthRepositoryInterface {
           emailVerified: data['emailVerified'] ?? false,
         );
       }
-      print('No user found with email: $normalizedEmail');
+      DebugUtils.debugPrint('No user found with email: $normalizedEmail',
+          tag: 'AuthRepository');
       return null;
     } catch (e) {
-      print('Error finding user by email: $e');
+      DebugUtils.errorPrint('Error finding user by email: $e',
+          tag: 'AuthRepository');
       return null;
     }
   }

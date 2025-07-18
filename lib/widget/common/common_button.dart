@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_maya_exam/widget/common/common_app_text.dart';
 
 class CommonButton extends StatelessWidget {
   final String text;
@@ -20,7 +21,7 @@ class CommonButton extends StatelessWidget {
         minimumSize: const Size(double.infinity, 48),
         backgroundColor: color,
       ),
-      child: Text(text),
+      child: AppText.labelLarge(text),
     );
   }
 }

@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:new_maya_exam/widget/common/common_app_bar.dart';
+import 'package:new_maya_exam/widget/common/common_app_text.dart';
 import 'package:new_maya_exam/bloc/transaction/transaction_bloc.dart';
 import 'package:new_maya_exam/bloc/transaction/transaction_event.dart';
 import 'package:new_maya_exam/bloc/transaction/transaction_state.dart';
 import 'package:new_maya_exam/models/transaction_model.dart';
+import 'package:new_maya_exam/utils/app_strings.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
   const TransactionHistoryPage({super.key});
@@ -38,7 +40,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       },
       child: Scaffold(
         appBar: CommonAppBar(
-            context: context, title: 'Transaction History', showLogout: true),
+            context: context,
+            title: AppStrings.titleTransactionHistory,
+            showLogout: true),
         body: BlocBuilder<TransactionBloc, TransactionState>(
           builder: (context, state) {
             if (state is TransactionLoading) {
@@ -50,14 +54,12 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                   children: [
                     Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
                     const SizedBox(height: 16),
-                    Text(
-                      'Error loading transactions',
-                      style: Theme.of(context).textTheme.titleLarge,
+                    const AppText.titleLarge(
+                      AppStrings.errorLoadingTransactions,
                     ),
                     const SizedBox(height: 8),
-                    Text(
+                    AppText.bodyMedium(
                       state.message,
-                      style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
@@ -70,7 +72,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                               .add(LoadTransactionHistory(currentUser.uid));
                         }
                       },
-                      child: const Text('Retry'),
+                      child: const AppText.labelLarge(AppStrings.buttonRetry),
                     ),
                   ],
                 ),
@@ -85,14 +87,14 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                       Icon(Icons.receipt_long_outlined,
                           size: 64, color: Colors.grey),
                       SizedBox(height: 16),
-                      Text(
-                        'No transactions found',
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      AppText.titleMedium(
+                        AppStrings.noTransactionsFound,
+                        color: Colors.grey,
                       ),
                       SizedBox(height: 8),
-                      Text(
-                        'Your transaction history will appear here',
-                        style: TextStyle(color: Colors.grey),
+                      AppText.bodyMedium(
+                        AppStrings.transactionHistoryHint,
+                        color: Colors.grey,
                       ),
                     ],
                   ),
@@ -109,7 +111,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
               );
             } else {
               return const Center(
-                child: Text('Please wait while we load your transactions...'),
+                child: AppText.bodyMedium(AppStrings.loadingTransactions),
               );
             }
           },
@@ -129,11 +131,11 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     if (isReceived) {
       icon = Icons.arrow_downward;
       iconColor = Colors.green;
-      typeText = 'Received';
+      typeText = AppStrings.transactionTypeReceived;
     } else if (isSent) {
       icon = Icons.arrow_upward;
       iconColor = Colors.red;
-      typeText = 'Sent';
+      typeText = AppStrings.transactionTypeSent;
     } else {
       icon = Icons.account_balance_wallet;
       iconColor = Colors.blue;
@@ -147,30 +149,23 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
           backgroundColor: iconColor.withOpacity(0.1),
           child: Icon(icon, color: iconColor),
         ),
-        title: Text(
-          '₱${transaction.amount.toStringAsFixed(2)}',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: isReceived
-                ? Colors.green
-                : (isSent ? Colors.red : Colors.black),
-          ),
+        title: AppText.currency(
+          AppStrings.formatCurrency(transaction.amount),
+          color:
+              isReceived ? Colors.green : (isSent ? Colors.red : Colors.black),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            AppText.bodySmall(
               transaction.description,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
-            Text(
+            AppText.labelSmall(
               _formatDate(transaction.timestamp),
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
+              color: Colors.grey[600],
             ),
           ],
         ),
@@ -180,13 +175,11 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
             color: iconColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Text(
+          child: AppText(
             typeText,
-            style: TextStyle(
-              color: iconColor,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppTextStyle.labelSmall,
+            color: iconColor,
+            fontWeight: FontWeight.bold,
           ),
         ),
         isThreeLine: true,
@@ -199,17 +192,14 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     final difference = now.difference(dateTime);
 
     if (difference.inDays == 0) {
-      // Today
       final hour = dateTime.hour.toString().padLeft(2, '0');
       final minute = dateTime.minute.toString().padLeft(2, '0');
-      return 'Today at $hour:$minute';
+      return AppStrings.formatDateToday('$hour:$minute');
     } else if (difference.inDays == 1) {
-      // Yesterday
       final hour = dateTime.hour.toString().padLeft(2, '0');
       final minute = dateTime.minute.toString().padLeft(2, '0');
-      return 'Yesterday at $hour:$minute';
+      return AppStrings.formatDateYesterday('$hour:$minute');
     } else {
-      // Older dates
       final day = dateTime.day.toString().padLeft(2, '0');
       final month = dateTime.month.toString().padLeft(2, '0');
       final year = dateTime.year;

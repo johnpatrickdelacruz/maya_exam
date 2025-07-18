@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/balance_model.dart';
 import '../models/transaction_model.dart';
+import '../utils/debug_utils.dart';
 
 abstract class BalanceRepositoryInterface {
   Future<BalanceModel?> getUserBalance(String uid);
@@ -28,7 +29,8 @@ class BalanceRepository implements BalanceRepositoryInterface {
       }
       return null;
     } catch (e) {
-      print('Error getting user balance: $e');
+      DebugUtils.errorPrint('Error getting user balance: $e',
+          tag: 'BalanceRepository');
       return null;
     }
   }
@@ -41,7 +43,8 @@ class BalanceRepository implements BalanceRepositoryInterface {
         'lastUpdated': FieldValue.serverTimestamp(),
       });
     } catch (e) {
-      print('Error updating user balance: $e');
+      DebugUtils.errorPrint('Error updating user balance: $e',
+          tag: 'BalanceRepository');
       rethrow;
     }
   }
@@ -55,7 +58,8 @@ class BalanceRepository implements BalanceRepositoryInterface {
         'lastUpdated': FieldValue.serverTimestamp(),
       });
     } catch (e) {
-      print('Error creating user balance: $e');
+      DebugUtils.errorPrint('Error creating user balance: $e',
+          tag: 'BalanceRepository');
       rethrow;
     }
   }
@@ -119,7 +123,8 @@ class BalanceRepository implements BalanceRepositoryInterface {
       // Commit the batch
       await batch.commit();
     } catch (e) {
-      print('Error recording transaction: $e');
+      DebugUtils.errorPrint('Error recording transaction: $e',
+          tag: 'BalanceRepository');
       rethrow;
     }
   }
@@ -137,7 +142,8 @@ class BalanceRepository implements BalanceRepositoryInterface {
           .map((doc) => TransactionModel.fromJson(doc.data()))
           .toList();
     } catch (e) {
-      print('Error getting user transactions: $e');
+      DebugUtils.errorPrint('Error getting user transactions: $e',
+          tag: 'BalanceRepository');
       return [];
     }
   }

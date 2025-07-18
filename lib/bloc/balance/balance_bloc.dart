@@ -4,6 +4,7 @@ import 'package:new_maya_exam/bloc/balance/balance_event.dart';
 import 'package:new_maya_exam/bloc/balance/balance_state.dart';
 import 'package:new_maya_exam/repository/balance_repository.dart';
 import 'package:new_maya_exam/models/transaction_model.dart';
+import 'package:new_maya_exam/utils/debug_utils.dart';
 // import 'package:new_maya_exam/utils/connectivity_service.dart';
 
 class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
@@ -26,7 +27,8 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
       if (balance != null) {
         emit(BalanceLoaded(balance));
       } else {
-        print('No balance found for user: ${event.uid}');
+        DebugUtils.debugPrint('No balance found for user: ${event.uid}',
+            tag: 'BalanceBloc');
       }
     } catch (e) {
       emit(BalanceError(e.toString()));
@@ -48,7 +50,8 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
 
   Future<void> _onGetCurrentBalance(
       GetCurrentBalance event, Emitter<BalanceState> emit) async {
-    print('Getting current balance for UID: ${event.uid}');
+    DebugUtils.debugPrint('Getting current balance for UID: ${event.uid}',
+        tag: 'BalanceBloc');
     emit(BalanceLoading());
 
     try {
@@ -66,11 +69,14 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
       final existingBalance =
           await _balanceRepository.getUserBalance(event.uid);
       if (existingBalance != null) {
-        print('Found existing balance: ${existingBalance.amount}');
+        DebugUtils.debugPrint(
+            'Found existing balance: ${existingBalance.amount}',
+            tag: 'BalanceBloc');
         emit(BalanceLoaded(existingBalance));
       } else {
-        print(
-            'No balance found for user: ${event.uid}, creating initial balance');
+        DebugUtils.debugPrint(
+            'No balance found for user: ${event.uid}, creating initial balance',
+            tag: 'BalanceBloc');
         // Create initial balance if it doesn't exist
         const double initialBalance = 10000.0;
         await _balanceRepository.createUserBalance(event.uid, initialBalance);
@@ -78,56 +84,69 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
         // Get the created balance to emit
         final newBalance = await _balanceRepository.getUserBalance(event.uid);
         if (newBalance != null) {
-          print('Successfully created balance: ${newBalance.amount}');
+          DebugUtils.debugPrint(
+              'Successfully created balance: ${newBalance.amount}',
+              tag: 'BalanceBloc');
           emit(BalanceLoaded(newBalance));
         } else {
           emit(const BalanceError('Failed to create balance'));
         }
       }
     } catch (e) {
-      print('Error getting current balance: $e');
+      DebugUtils.errorPrint('Error getting current balance: $e',
+          tag: 'BalanceBloc');
       emit(BalanceError(e.toString()));
     }
   }
 
   Future<void> _onWatchBalance(
       WatchBalance event, Emitter<BalanceState> emit) async {
-    print('Starting WatchBalance for UID: ${event.uid}');
+    DebugUtils.debugPrint('Starting WatchBalance for UID: ${event.uid}',
+        tag: 'BalanceBloc');
     await _balanceSubscription?.cancel();
 
     // First check if balance exists, if not create it
     try {
-      print('Checking if balance exists for UID: ${event.uid}');
+      DebugUtils.debugPrint('Checking if balance exists for UID: ${event.uid}',
+          tag: 'BalanceBloc');
       final existingBalance =
           await _balanceRepository.getUserBalance(event.uid);
       if (existingBalance == null) {
-        print('No existing balance found, creating new balance');
+        DebugUtils.debugPrint('No existing balance found, creating new balance',
+            tag: 'BalanceBloc');
         // Create initial balance if it doesn't exist
         add(GetCurrentBalance(event.uid));
         return;
       } else {
-        print('Found existing balance: ${existingBalance.amount}');
+        DebugUtils.debugPrint(
+            'Found existing balance: ${existingBalance.amount}',
+            tag: 'BalanceBloc');
       }
     } catch (e) {
-      print('Error checking existing balance: $e');
+      DebugUtils.errorPrint('Error checking existing balance: $e',
+          tag: 'BalanceBloc');
       emit(BalanceError(e.toString()));
       return;
     }
 
     // Start watching for real-time updates
-    print('Starting real-time balance watcher');
+    DebugUtils.debugPrint('Starting real-time balance watcher',
+        tag: 'BalanceBloc');
     _balanceSubscription =
         _balanceRepository.watchUserBalance(event.uid).listen(
       (balance) {
         if (balance != null) {
-          print('Received balance update: ${balance.amount}');
+          DebugUtils.debugPrint('Received balance update: ${balance.amount}',
+              tag: 'BalanceBloc');
           emit(BalanceLoaded(balance));
         } else {
-          print('Received null balance from watcher');
+          DebugUtils.debugPrint('Received null balance from watcher',
+              tag: 'BalanceBloc');
         }
       },
       onError: (error) {
-        print('Error in balance watcher: $error');
+        DebugUtils.errorPrint('Error in balance watcher: $error',
+            tag: 'BalanceBloc');
         emit(BalanceError(error.toString()));
       },
     );
