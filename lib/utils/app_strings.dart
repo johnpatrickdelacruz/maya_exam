@@ -26,6 +26,7 @@ class AppStrings {
   static const String buttonRetry = 'Retry';
   static const String buttonCancel = 'Cancel';
   static const String buttonLogout = 'Logout';
+  static const String buttonOk = 'Ok';
 
   // Form Labels
   static const String labelEmail = 'Email';

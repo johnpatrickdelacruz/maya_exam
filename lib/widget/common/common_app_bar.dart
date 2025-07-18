@@ -29,7 +29,7 @@ class CommonAppBar extends AppBar {
                         title: AppStrings.dialogLogoutTitle,
                         content: AppStrings.dialogLogoutContent,
                         cancelText: AppStrings.buttonCancel,
-                        okText: AppStrings.buttonLogout,
+                        okText: AppStrings.buttonOk,
                         onCancel: () => Navigator.pop(context),
                         onOk: () {
                           Navigator.pop(context);
